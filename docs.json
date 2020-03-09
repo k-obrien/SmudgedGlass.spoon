@@ -19,22 +19,20 @@
 
     ],
     "type" : "Module",
-    "desc" : "Adds hotkeys to manipulate the selected window.",
+    "desc" : "Assign hotkeys to manipulate the selected window.",
     "Constructor" : [
 
     ],
-    "Field" : [
-
-    ],
+    "doc" : "Assign hotkeys to manipulate the selected window.\n\nDownload: [https:\/\/github.com\/k-obrien\/smudged-glass\/raw\/master\/SmudgedGlass.spoon.zip](https:\/\/github.com\/k-obrien\/smudged-glass\/raw\/master\/SmudgedGlass.spoon.zip)",
     "Method" : [
       {
-        "doc" : "Binds hotkeys for SmudgedGlass\n\nParameters:\n\t * mapping - A table containing hotkey modifier\/key details for the following items:\n  * toggleGrid - Show\/Hide the interactive modal window management grid\n\t  * windowMaximise - Maximise focused window\n  * windowMaximiseCentre - Move and resize focused window to occupy centre half of screen\n\t  * windowLeft - Move and resize focused window to occupy left half of screen\n  * windowLeftTop - Move and resize focused window to occupy top left corner of screen\n  * windowLeftBottom - Move and resize focused window to occupy bottom left corner of screen\n\t  * windowRight - Move and resize focused window to occupy right half of screen\n  * windowRightTop - Move and resize focused window to occupy top right corner of screen\n  * windowRightBottom - Move and resize focused window to occupy bottom right corner of screen\n\t  * windowCentre - Centre focused window on screen\n\t  * windowNorth - Move focused window to screen above current\n\t  * windowSouth - Move focused window to screen below current\n\t  * windowWest - Move focused window to screen left of current\n\t  * windowEast - Move focused window to screen right of current",
+        "desc" : "Binds hotkeys for SmudgedGlass",
         "stripped_doc" : [
           "Binds hotkeys for SmudgedGlass",
           ""
         ],
         "def" : "SmudgedGlass:bindHotKeys(map)",
-        "desc" : "Binds hotkeys for SmudgedGlass",
+        "doc" : "Binds hotkeys for SmudgedGlass\n\nParameters:\n\t * mapping - A table containing hotkey modifier\/key details for the following items:\n  * toggleGrid - Show\/Hide the interactive modal window management grid\n\t  * windowMaximise - Maximise focused window\n  * windowMaximiseCentre - Move and resize focused window to occupy centre half of screen\n\t  * windowLeft - Move and resize focused window to occupy left half of screen\n  * windowLeftTop - Move and resize focused window to occupy top left corner of screen\n  * windowLeftBottom - Move and resize focused window to occupy bottom left corner of screen\n\t  * windowRight - Move and resize focused window to occupy right half of screen\n  * windowRightTop - Move and resize focused window to occupy top right corner of screen\n  * windowRightBottom - Move and resize focused window to occupy bottom right corner of screen\n\t  * windowCentre - Centre focused window on screen\n\t  * windowNorth - Move focused window to screen above current\n\t  * windowSouth - Move focused window to screen below current\n\t  * windowWest - Move focused window to screen left of current\n\t  * windowEast - Move focused window to screen right of current",
         "notes" : [
 
         ],
@@ -63,13 +61,13 @@
         ]
       },
       {
-        "doc" : "Set the grid size for window management\n\nParameters:\n * None",
+        "desc" : "Set the grid size for window management",
         "stripped_doc" : [
           "Set the grid size for window management",
           ""
         ],
         "def" : "SmudgedGlass:start()",
-        "desc" : "Set the grid size for window management",
+        "doc" : "Set the grid size for window management\n\nParameters:\n * None",
         "notes" : [
 
         ],
@@ -87,15 +85,18 @@
     "Command" : [
 
     ],
+    "Field" : [
+
+    ],
     "items" : [
       {
-        "doc" : "Binds hotkeys for SmudgedGlass\n\nParameters:\n\t * mapping - A table containing hotkey modifier\/key details for the following items:\n  * toggleGrid - Show\/Hide the interactive modal window management grid\n\t  * windowMaximise - Maximise focused window\n  * windowMaximiseCentre - Move and resize focused window to occupy centre half of screen\n\t  * windowLeft - Move and resize focused window to occupy left half of screen\n  * windowLeftTop - Move and resize focused window to occupy top left corner of screen\n  * windowLeftBottom - Move and resize focused window to occupy bottom left corner of screen\n\t  * windowRight - Move and resize focused window to occupy right half of screen\n  * windowRightTop - Move and resize focused window to occupy top right corner of screen\n  * windowRightBottom - Move and resize focused window to occupy bottom right corner of screen\n\t  * windowCentre - Centre focused window on screen\n\t  * windowNorth - Move focused window to screen above current\n\t  * windowSouth - Move focused window to screen below current\n\t  * windowWest - Move focused window to screen left of current\n\t  * windowEast - Move focused window to screen right of current",
+        "desc" : "Binds hotkeys for SmudgedGlass",
         "stripped_doc" : [
           "Binds hotkeys for SmudgedGlass",
           ""
         ],
         "def" : "SmudgedGlass:bindHotKeys(map)",
-        "desc" : "Binds hotkeys for SmudgedGlass",
+        "doc" : "Binds hotkeys for SmudgedGlass\n\nParameters:\n\t * mapping - A table containing hotkey modifier\/key details for the following items:\n  * toggleGrid - Show\/Hide the interactive modal window management grid\n\t  * windowMaximise - Maximise focused window\n  * windowMaximiseCentre - Move and resize focused window to occupy centre half of screen\n\t  * windowLeft - Move and resize focused window to occupy left half of screen\n  * windowLeftTop - Move and resize focused window to occupy top left corner of screen\n  * windowLeftBottom - Move and resize focused window to occupy bottom left corner of screen\n\t  * windowRight - Move and resize focused window to occupy right half of screen\n  * windowRightTop - Move and resize focused window to occupy top right corner of screen\n  * windowRightBottom - Move and resize focused window to occupy bottom right corner of screen\n\t  * windowCentre - Centre focused window on screen\n\t  * windowNorth - Move focused window to screen above current\n\t  * windowSouth - Move focused window to screen below current\n\t  * windowWest - Move focused window to screen left of current\n\t  * windowEast - Move focused window to screen right of current",
         "notes" : [
 
         ],
@@ -124,13 +125,13 @@
         ]
       },
       {
-        "doc" : "Set the grid size for window management\n\nParameters:\n * None",
+        "desc" : "Set the grid size for window management",
         "stripped_doc" : [
           "Set the grid size for window management",
           ""
         ],
         "def" : "SmudgedGlass:start()",
-        "desc" : "Set the grid size for window management",
+        "doc" : "Set the grid size for window management\n\nParameters:\n * None",
         "notes" : [
 
         ],
@@ -145,7 +146,6 @@
         ]
       }
     ],
-    "doc" : "Adds hotkeys to manipulate the selected window.\n\nDownload: [https:\/\/github.com\/k-obrien\/smudged-glass\/raw\/master\/SmudgedGlass.spoon.zip](https:\/\/github.com\/k-obrien\/smudged-glass\/raw\/master\/SmudgedGlass.spoon.zip)",
     "name" : "SmudgedGlass"
   }
 ]
