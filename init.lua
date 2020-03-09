@@ -1,6 +1,6 @@
 --- === SmudgedGlass ===
 ---
---- Adds hotkeys to manipulate the selected window.
+--- Assign hotkeys to manipulate the selected window.
 ---
 --- Download: [https://github.com/k-obrien/smudged-glass/raw/master/SmudgedGlass.spoon.zip](https://github.com/k-obrien/smudged-glass/raw/master/SmudgedGlass.spoon.zip)
 
@@ -13,7 +13,6 @@ obj.version = "0.1"
 obj.author = "Kieran O'Brien"
 obj.homepage = "https://github.com/k-obrien/smudged-glass"
 obj.license = "GPLv3 - https://opensource.org/licenses/GPL-3.0"
-
 
 obj.gridSize = hs.geometry.size(4, 4)
 
@@ -48,22 +47,22 @@ obj.windowGeoRightBottom = hs.geometry.rect(2, 2, 2, 2)
 ---	  * windowWest - Move focused window to screen left of current
 ---	  * windowEast - Move focused window to screen right of current
 function obj:bindHotKeys(map)
-	local focusedWindow = hs.window.focusedWindow
+	local partial = hs.fnutils.partial
 	local def = {
 		toggleGrid = hs.grid.toggleShow,
 		windowMaximise = hs.grid.maximizeWindow,
-		windowMaximiseCentre = hs.fnutils.partial(self.setGrid, self.windowGeoMaxCentre),
-		windowLeft = hs.fnutils.partial(self.setGrid, self.windowGeoLeft),
-		windowLeftTop = hs.fnutils.partial(self.setGrid, self.windowGeoLeftTop),
-		windowLeftBottom = hs.fnutils.partial(self.setGrid, self.windowGeoLeftBottom),
-		windowRight = hs.fnutils.partial(self.setGrid, self.windowGeoRight),
-		windowRightTop = hs.fnutils.partial(self.setGrid, self.windowGeoRightTop),
-		windowRightBottom = hs.fnutils.partial(self.setGrid, self.windowGeoRightBottom),
-		windowCentre = self.centreWindow,
-		windowNorth = self.moveWindowNorth,
-		windowSouth = self.moveWindowSouth,
-		windowWest = self.moveWindowWest,
-		windowEast = self.moveWindowEast
+		windowMaximiseCentre = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoMaxCentre)),
+		windowLeft = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoLeft)),
+		windowLeftTop = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoLeftTop)),
+		windowLeftBottom = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoLeftBottom)),
+		windowRight = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoRight)),
+		windowRightTop = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoRightTop)),
+		windowRightBottom = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoRightBottom)),
+		windowCentre = partial(self.withFocusedWindow, self.centreWindow),
+		windowNorth = partial(self.withFocusedWindow, self.moveWindowNorth),
+		windowSouth = partial(self.withFocusedWindow, self.moveWindowSouth),
+		windowWest = partial(self.withFocusedWindow, self.moveWindowWest),
+		windowEast = partial(self.withFocusedWindow, self.moveWindowEast)
 	}
     hs.spoons.bindHotkeysToSpec(def, map)
 end
@@ -80,29 +79,36 @@ function obj:start()
     return self
 end
 
-function obj.setGrid(cell)
-	hs.grid.set(hs.window.focusedWindow(), cell)
+function obj.withFocusedWindow(funcWithFocusedWindow)
+	local focusedWindow = hs.window.focusedWindow()
+
+	if (focusedWindow ~= nil) then
+		funcWithFocusedWindow(focusedWindow)
+	end
 end
 
-function obj.centreWindow()
-	local focusedWindow = hs.window.focusedWindow()
+function obj.setGrid(cell, focusedWindow)
+	hs.grid.set(focusedWindow, cell)
+end
+
+function obj.centreWindow(focusedWindow)
 	focusedWindow:centerOnScreen(focusedWindow:screen(), true)
 end
 
-function obj.moveWindowNorth()
-	hs.window.focusedWindow():moveOneScreenNorth(false, true)
+function obj.moveWindowNorth(focusedWindow)
+	focusedWindow:moveOneScreenNorth(false, true)
 end
 
-function obj.moveWindowSouth()
-	hs.window.focusedWindow():moveOneScreenSouth(false, true)
+function obj.moveWindowSouth(focusedWindow)
+	focusedWindow:moveOneScreenSouth(false, true)
 end
 
-function obj.moveWindowWest()
-	hs.window.focusedWindow():moveOneScreenWest(false, true)
+function obj.moveWindowWest(focusedWindow)
+	focusedWindow:moveOneScreenWest(false, true)
 end
 
-function obj.moveWindowEast()
-	hs.window.focusedWindow():moveOneScreenEast(false, true)
+function obj.moveWindowEast(focusedWindow)
+	focusedWindow:moveOneScreenEast(false, true)
 end
 
 return obj
