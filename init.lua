@@ -9,22 +9,21 @@ obj.__index = obj
 
 -- Metadata
 obj.name = "SmudgedGlass"
-obj.version = "0.1"
+obj.version = "0.2"
 obj.author = "Kieran O'Brien"
 obj.homepage = "https://github.com/k-obrien/smudged-glass"
 obj.license = "GPLv3 - https://opensource.org/licenses/GPL-3.0"
 
 obj.gridSize = hs.geometry.size(4, 4)
-
 obj.windowMargins = hs.geometry.size(0, 0)
-
-obj.windowGeoMaxCentre = hs.geometry.rect(1, 0, 2, 4)
-obj.windowGeoLeft = hs.geometry.rect(0, 0, 2, 4)
-obj.windowGeoLeftTop = hs.geometry.rect(0, 0, 2, 2)
-obj.windowGeoLeftBottom = hs.geometry.rect(0, 2, 2, 2)
-obj.windowGeoRight = hs.geometry.rect(2, 0, 2, 4)
-obj.windowGeoRightTop = hs.geometry.rect(2, 0, 2, 2)
-obj.windowGeoRightBottom = hs.geometry.rect(2, 2, 2, 2)
+obj.windowCellCentreVertMax = hs.geometry.rect(1, 0, 2, 4)
+obj.windowCellLeftVertMax = hs.geometry.rect(0, 0, 2, 4)
+obj.windowCellLeftTop = hs.geometry.rect(0, 0, 2, 2)
+obj.windowCellLeftBottom = hs.geometry.rect(0, 2, 2, 2)
+obj.windowCellRightVertMax = hs.geometry.rect(2, 0, 2, 4)
+obj.windowCellRightTop = hs.geometry.rect(2, 0, 2, 2)
+obj.windowCellRightBottom = hs.geometry.rect(2, 2, 2, 2)
+obj.cellCache = {}
 
 --- SmudgedGlass:bindHotKeys(map)
 --- Method
@@ -48,22 +47,24 @@ obj.windowGeoRightBottom = hs.geometry.rect(2, 2, 2, 2)
 ---	  * windowEast - Move focused window to screen right of current
 function obj:bindHotKeys(map)
 	local partial = hs.fnutils.partial
+	local setCell = hs.grid.set
 	local def = {
 		toggleGrid = hs.grid.toggleShow,
-		windowMaximise = hs.grid.maximizeWindow,
-		windowMaximiseCentre = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoMaxCentre)),
-		windowLeft = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoLeft)),
-		windowLeftTop = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoLeftTop)),
-		windowLeftBottom = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoLeftBottom)),
-		windowRight = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoRight)),
-		windowRightTop = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoRightTop)),
-		windowRightBottom = partial(self.withFocusedWindow, partial(self.setGrid, self.windowGeoRightBottom)),
+		windowMaximise = partial(self.withFocusedWindow, self.toggleWindowMaximized),
+		windowMaximiseCentre = partial(self.withFocusedWindow, setCell, self.windowCellCentreVertMax),
+		windowLeft = partial(self.withFocusedWindow, setCell, self.windowCellLeftVertMax),
+		windowLeftTop = partial(self.withFocusedWindow, setCell, self.windowCellLeftTop),
+		windowLeftBottom = partial(self.withFocusedWindow, setCell, self.windowCellLeftBottom),
+		windowRight = partial(self.withFocusedWindow, setCell, self.windowCellRightVertMax),
+		windowRightTop = partial(self.withFocusedWindow, setCell, self.windowCellRightTop),
+		windowRightBottom = partial(self.withFocusedWindow, setCell, self.windowCellRightBottom),
 		windowCentre = partial(self.withFocusedWindow, self.centreWindow),
 		windowNorth = partial(self.withFocusedWindow, self.moveWindowNorth),
 		windowSouth = partial(self.withFocusedWindow, self.moveWindowSouth),
 		windowWest = partial(self.withFocusedWindow, self.moveWindowWest),
 		windowEast = partial(self.withFocusedWindow, self.moveWindowEast)
 	}
+
     hs.spoons.bindHotkeysToSpec(def, map)
 end
 
@@ -79,16 +80,24 @@ function obj:start()
     return self
 end
 
-function obj.withFocusedWindow(funcWithFocusedWindow)
+function obj.withFocusedWindow(funcWithFocusedWindow, ...)
 	local focusedWindow = hs.window.focusedWindow()
-
-	if (focusedWindow ~= nil) then
-		funcWithFocusedWindow(focusedWindow)
-	end
+	if focusedWindow then funcWithFocusedWindow(focusedWindow, ...) end
 end
 
-function obj.setGrid(cell, focusedWindow)
-	hs.grid.set(focusedWindow, cell)
+function obj.toggleWindowMaximized(focusedWindow)
+	local windowId = focusedWindow:id()
+	local windowCell = obj.cellCache[windowId]
+
+    if windowCell then
+		hs.grid.set(focusedWindow, windowCell)
+		windowCell = nil
+    else
+        windowCell = hs.grid.get(focusedWindow)
+        hs.grid.maximizeWindow(focusedWindow)
+    end
+
+	obj.cellCache[windowId] = windowCell
 end
 
 function obj.centreWindow(focusedWindow)
