@@ -9,21 +9,23 @@ obj.__index = obj
 
 -- Metadata
 obj.name = "SmudgedGlass"
-obj.version = "0.2"
+obj.version = "0.3"
 obj.author = "Kieran O'Brien"
 obj.homepage = "https://github.com/k-obrien/smudged-glass"
 obj.license = "GPLv3 - https://opensource.org/licenses/GPL-3.0"
 
 obj.gridSize = hs.geometry.size(4, 4)
 obj.windowMargins = hs.geometry.size(0, 0)
-obj.windowCellCentreVertMax = hs.geometry.rect(1, 0, 2, 4)
-obj.windowCellLeftVertMax = hs.geometry.rect(0, 0, 2, 4)
-obj.windowCellLeftTop = hs.geometry.rect(0, 0, 2, 2)
-obj.windowCellLeftBottom = hs.geometry.rect(0, 2, 2, 2)
-obj.windowCellRightVertMax = hs.geometry.rect(2, 0, 2, 4)
-obj.windowCellRightTop = hs.geometry.rect(2, 0, 2, 2)
-obj.windowCellRightBottom = hs.geometry.rect(2, 2, 2, 2)
-obj.cellCache = {}
+obj.windowCellCache = {}
+obj.windowCells = {
+	centreVertMax = hs.geometry.rect(1, 0, 2, 4),
+	leftVertMax = hs.geometry.rect(0, 0, 2, 4),
+	leftTop = hs.geometry.rect(0, 0, 2, 2),
+	leftBottom = hs.geometry.rect(0, 2, 2, 2),
+	rightVertMax = hs.geometry.rect(2, 0, 2, 4),
+	rightTop = hs.geometry.rect(2, 0, 2, 2),
+	rightBottom = hs.geometry.rect(2, 2, 2, 2)
+}
 
 --- SmudgedGlass:bindHotKeys(map)
 --- Method
@@ -45,24 +47,26 @@ obj.cellCache = {}
 ---	  * windowSouth - Move focused window to screen below current
 ---	  * windowWest - Move focused window to screen left of current
 ---	  * windowEast - Move focused window to screen right of current
+---   * undo - Undo last resize/move operation for focused window
 function obj:bindHotKeys(map)
 	local partial = hs.fnutils.partial
 	local setCell = hs.grid.set
 	local def = {
 		toggleGrid = hs.grid.toggleShow,
-		windowMaximise = partial(self.withFocusedWindow, self.toggleWindowMaximized),
-		windowMaximiseCentre = partial(self.withFocusedWindow, setCell, self.windowCellCentreVertMax),
-		windowLeft = partial(self.withFocusedWindow, setCell, self.windowCellLeftVertMax),
-		windowLeftTop = partial(self.withFocusedWindow, setCell, self.windowCellLeftTop),
-		windowLeftBottom = partial(self.withFocusedWindow, setCell, self.windowCellLeftBottom),
-		windowRight = partial(self.withFocusedWindow, setCell, self.windowCellRightVertMax),
-		windowRightTop = partial(self.withFocusedWindow, setCell, self.windowCellRightTop),
-		windowRightBottom = partial(self.withFocusedWindow, setCell, self.windowCellRightBottom),
-		windowCentre = partial(self.withFocusedWindow, self.centreWindow),
-		windowNorth = partial(self.withFocusedWindow, self.moveWindowNorth),
-		windowSouth = partial(self.withFocusedWindow, self.moveWindowSouth),
-		windowWest = partial(self.withFocusedWindow, self.moveWindowWest),
-		windowEast = partial(self.withFocusedWindow, self.moveWindowEast)
+		windowMaximise = partial(self.withFocusedWindow, true, hs.grid.maximizeWindow),
+		windowMaximiseCentre = partial(self.withFocusedWindow, true, setCell, self.windowCells.centreVertMax),
+		windowLeft = partial(self.withFocusedWindow, true, setCell, self.windowCells.leftVertMax),
+		windowLeftTop = partial(self.withFocusedWindow, true, setCell, self.windowCells.leftTop),
+		windowLeftBottom = partial(self.withFocusedWindow, true, setCell, self.windowCells.leftBottom),
+		windowRight = partial(self.withFocusedWindow, true, setCell, self.windowCells.rightVertMax),
+		windowRightTop = partial(self.withFocusedWindow, true, setCell, self.windowCells.rightTop),
+		windowRightBottom = partial(self.withFocusedWindow, true, setCell, self.windowCells.rightBottom),
+		windowCentre = partial(self.withFocusedWindow, true, self.centreWindow),
+		windowNorth = partial(self.withFocusedWindow, false, self.moveWindowNorth),
+		windowSouth = partial(self.withFocusedWindow, false, self.moveWindowSouth),
+		windowWest = partial(self.withFocusedWindow, false, self.moveWindowWest),
+		windowEast = partial(self.withFocusedWindow, false, self.moveWindowEast),
+		undo = partial(self.withFocusedWindow, false, self.undo)
 	}
 
     hs.spoons.bindHotkeysToSpec(def, map)
@@ -70,7 +74,7 @@ end
 
 --- SmudgedGlass:start()
 --- Method
---- Set the grid size for window management
+--- Set the grid size and margins for window management
 ---
 --- Parameters:
 ---  * None
@@ -80,44 +84,56 @@ function obj:start()
     return self
 end
 
-function obj.withFocusedWindow(funcWithFocusedWindow, ...)
-	local focusedWindow = hs.window.focusedWindow()
-	if focusedWindow then funcWithFocusedWindow(focusedWindow, ...) end
+function obj.pushWindowFrame(window)
+	if #obj.windowCellCache >= 50 then table.remove(obj.windowCellCache) end
+	local windowId = window:id()
+	local windowCell = window:frame()
+	table.insert(obj.windowCellCache, 1, { windowId, windowCell })
 end
 
-function obj.toggleWindowMaximized(focusedWindow)
-	local windowId = focusedWindow:id()
-	local windowCell = obj.cellCache[windowId]
+function obj.popWindowFrame(window)
+	local windowId = window:id()
 
-    if windowCell then
-		hs.grid.set(focusedWindow, windowCell)
-		windowCell = nil
-    else
-        windowCell = hs.grid.get(focusedWindow)
-        hs.grid.maximizeWindow(focusedWindow)
-    end
-
-	obj.cellCache[windowId] = windowCell
+	for index, cachedCell in ipairs(obj.windowCellCache) do
+		if cachedCell[1] == windowId then
+			table.remove(obj.windowCellCache, index)
+			return cachedCell[2]
+		end
+	end
 end
 
-function obj.centreWindow(focusedWindow)
-	focusedWindow:centerOnScreen(focusedWindow:screen(), true)
+function obj.withFocusedWindow(addToStack, windowFunc, ...)
+	local focusedWindow = hs.window.focusedWindow() or hs.alert.show("No window has focus!")
+
+	if focusedWindow then
+		if addToStack then obj.pushWindowFrame(focusedWindow) end
+		windowFunc(focusedWindow, ...)
+	end
 end
 
-function obj.moveWindowNorth(focusedWindow)
-	focusedWindow:moveOneScreenNorth(false, true)
+function obj.centreWindow(window)
+	window:centerOnScreen(window:screen(), true)
 end
 
-function obj.moveWindowSouth(focusedWindow)
-	focusedWindow:moveOneScreenSouth(false, true)
+function obj.moveWindowNorth(window)
+	window:moveOneScreenNorth(false, true)
 end
 
-function obj.moveWindowWest(focusedWindow)
-	focusedWindow:moveOneScreenWest(false, true)
+function obj.moveWindowSouth(window)
+	window:moveOneScreenSouth(false, true)
 end
 
-function obj.moveWindowEast(focusedWindow)
-	focusedWindow:moveOneScreenEast(false, true)
+function obj.moveWindowWest(window)
+	window:moveOneScreenWest(false, true)
+end
+
+function obj.moveWindowEast(window)
+	window:moveOneScreenEast(false, true)
+end
+
+function obj.undo(window)
+	local cachedWindowCell = obj.popWindowFrame(window)
+	if cachedWindowCell then window:setFrame(cachedWindowCell) end
 end
 
 return obj
