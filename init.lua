@@ -2,7 +2,7 @@
 ---
 --- Assign hotkeys to manipulate the selected window.
 ---
---- Download: [https://github.com/k-obrien/smudged-glass/raw/master/SmudgedGlass.spoon.zip](https://github.com/k-obrien/smudged-glass/raw/master/SmudgedGlass.spoon.zip)
+--- Download: [https://github.com/k-obrien/SmudgedGlass.spoon/archive/master.zip](https://github.com/k-obrien/SmudgedGlass.spoon/archive/master.zip)
 
 local obj = {}
 obj.__index = obj
@@ -11,7 +11,7 @@ obj.__index = obj
 obj.name = "SmudgedGlass"
 obj.version = "0.3"
 obj.author = "Kieran O'Brien"
-obj.homepage = "https://github.com/k-obrien/smudged-glass"
+obj.homepage = "https://github.com/k-obrien/SmudgedGlass.spoon"
 obj.license = "GPLv3 - https://opensource.org/licenses/GPL-3.0"
 
 obj.gridSize = hs.geometry.size(4, 4)
