@@ -14,17 +14,17 @@ obj.author = "Kieran O'Brien"
 obj.homepage = "https://github.com/k-obrien/SmudgedGlass.spoon"
 obj.license = "GPLv3 - https://opensource.org/licenses/GPL-3.0"
 
-obj.gridSize = hs.geometry.size(4, 4)
+obj.gridSize = hs.geometry.size(8, 4)
 obj.windowMargins = hs.geometry.size(0, 0)
 obj.windowCellCache = {}
 obj.windowCells = {
-	centreVertMax = hs.geometry.rect(1, 0, 2, 4),
-	leftVertMax = hs.geometry.rect(0, 0, 2, 4),
-	leftTop = hs.geometry.rect(0, 0, 2, 2),
-	leftBottom = hs.geometry.rect(0, 2, 2, 2),
-	rightVertMax = hs.geometry.rect(2, 0, 2, 4),
-	rightTop = hs.geometry.rect(2, 0, 2, 2),
-	rightBottom = hs.geometry.rect(2, 2, 2, 2)
+	centreVertMax = hs.geometry.rect(2, 0, 4, 4),
+	leftVertMax = hs.geometry.rect(0, 0, 4, 4),
+	leftTop = hs.geometry.rect(0, 0, 4, 2),
+	leftBottom = hs.geometry.rect(0, 2, 4, 2),
+	rightVertMax = hs.geometry.rect(4, 0, 4, 4),
+	rightTop = hs.geometry.rect(4, 0, 4, 2),
+	rightBottom = hs.geometry.rect(4, 2, 4, 2)
 }
 
 --- SmudgedGlass:bindHotKeys(map)
