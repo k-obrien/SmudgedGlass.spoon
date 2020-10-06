@@ -4,6 +4,8 @@
 ---
 --- Download: [https://github.com/k-obrien/SmudgedGlass.spoon/archive/master.zip](https://github.com/k-obrien/SmudgedGlass.spoon/archive/master.zip)
 
+hs.window.animationDuration = 0
+
 local obj = {}
 obj.__index = obj
 
