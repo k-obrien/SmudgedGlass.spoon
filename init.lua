@@ -118,19 +118,19 @@ function obj.centreWindow(window)
 end
 
 function obj.moveWindowNorth(window)
-	window:moveOneScreenNorth(false, true)
+	window:moveOneScreenNorth(true, true)
 end
 
 function obj.moveWindowSouth(window)
-	window:moveOneScreenSouth(false, true)
+	window:moveOneScreenSouth(true, true)
 end
 
 function obj.moveWindowWest(window)
-	window:moveOneScreenWest(false, true)
+	window:moveOneScreenWest(true, true)
 end
 
 function obj.moveWindowEast(window)
-	window:moveOneScreenEast(false, true)
+	window:moveOneScreenEast(true, true)
 end
 
 function obj.undo(window)
